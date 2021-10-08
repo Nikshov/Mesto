@@ -1,0 +1,19 @@
+.popup__container {
+  top: calc(50vh - 171px);
+  max-width: 430px;
+  max-height: 330px;
+  width: 100%;
+  background: #FFFFFF;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+  position: relative;
+  margin: 0 auto;
+}
+
+@media screen and (max-width: 640px) {
+  .popup__container {
+    top: calc(50vh - 164px);
+    max-width: 282px;
+    margin: 0 auto;
+  }
+}

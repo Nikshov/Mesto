@@ -1,0 +1,13 @@
+.popup__viewer {
+  max-height: calc(100vh - 110px);
+  max-width: calc(100vw - 110px);
+  margin: auto;
+  position: relative;
+}
+
+@media screen and (max-width: 640px) {
+  .popup__viewer {
+    max-height: calc(100vh - 90px);
+    max-width: calc(100vw - 38px);
+  }
+}

@@ -1,0 +1,7 @@
+.sign {
+  display: flex;
+  flex-direction: column;
+  max-width: 358px;
+  margin: auto;
+  background-color: #000;
+}

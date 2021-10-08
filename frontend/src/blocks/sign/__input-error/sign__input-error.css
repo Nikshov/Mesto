@@ -1,0 +1,7 @@
+.sign__input-error {
+  margin: 0 auto 15px;
+  font-size: 12px;
+  line-height: 15px;
+  color: #ff0000;
+  visibility: hidden;
+}

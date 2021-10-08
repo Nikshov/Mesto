@@ -1,0 +1,12 @@
+.profile__avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profile__avatar:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+  transition: background-color 0.6s;
+  background-image: url('../../../images/avatarVector.png');
+}

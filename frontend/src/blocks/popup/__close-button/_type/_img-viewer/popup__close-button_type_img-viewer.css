@@ -1,0 +1,14 @@
+.popup__close-button_type_img-viewer {
+  right: -40px;
+  top: -40px;
+}
+
+@media screen and (max-width: 640px) {
+  .popup__close-button_type_img-viewer {
+    background-image: url("../../../../../images/close-button-mobile.svg");
+    width: 26px;
+    height: 26px;
+    top: -41px;
+    right: 0px;
+  }
+}
