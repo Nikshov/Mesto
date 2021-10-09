@@ -1,3 +1,4 @@
+require('dotenv').config();
 const bcrypt = require('bcryptjs');
 
 const jwt = require('jsonwebtoken');
@@ -43,7 +44,7 @@ const createUser = (req, res, next) => {
       email,
       password: hash,
     }))
-    .then(() => res.status(200).send({ message: 'пользователь успешно зарегестрирован' }))
+    .then(() => res.status(200).send({ message: 'пользователь успешно зарегистрирован' }))
     .catch(next);
 };
 
@@ -71,13 +72,15 @@ const updateAvatar = (req, res, next) => {
 
 const login = (req, res, next) => {
   const { email, password } = req.body;
+  const { NODE_ENV, JWT_SECRET } = process.env;
   User.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) throw new UnauthorizedError('Неправильные почта или пароль');
       bcrypt.compare(password, user.password)
         .then((m) => {
           if (!m) throw new UnauthorizedError('Неправильные почта или пароль');
-          const token = jwt.sign({ _id: user._id }, 'secret', { expiresIn: '7d' });
+          const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'secret',
+            { expiresIn: '7d' });
           res
             .status(200)
             .cookie('token', token, { maxAge: 604800000, httpOnly: true, sameSite: true })
@@ -88,10 +91,18 @@ const login = (req, res, next) => {
     .catch(next);
 };
 
+const logOut = (req, res) => {
+  res.status(200).cookie('token', '', { maxAge: -1 }).send({});
+};
+
 const getActualUser = (req, res, next) => {
   User.findById({ _id: req.user._id })
     .then((user) => res.status(200).send(user))
     .catch(next);
+};
+
+const approveCheck = (req, res) => {
+  res.status(200).send({});
 };
 
 module.exports = {
@@ -102,4 +113,6 @@ module.exports = {
   updateUser,
   login,
   getActualUser,
+  logOut,
+  approveCheck,
 };

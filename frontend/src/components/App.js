@@ -24,6 +24,8 @@ import {
   getCurrentUserInfo,
   editUserInfo,
   editAvatar,
+  signOut,
+  check,
 } from '../utils/api';
 
 function App() {
@@ -38,8 +40,17 @@ function App() {
   const [deleteCard, setDeleteCard] = React.useState({ isOpen: false });
   const [isSignUpSuccess, setIsSignUpSuccess] = React.useState(false);
   const [isInfoTooltipOpen, setIsInfoTooltipOpen] = React.useState(false);
-  const [email, setEmail] = React.useState('');
   const history = useHistory();
+
+  React.useEffect(() => {
+    if (!loggedIn)
+      check()
+        .then(() => {
+          setLoggedIn(true);
+          history.push('/');
+        })
+        .catch(err => console.log(err));
+  }, [history, loggedIn]);
 
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
@@ -69,6 +80,7 @@ function App() {
     editUserInfo({ name, about })
       .then(data => {
         setCurrentUser(data);
+        console.log(currentUser);
         closeAllPopups();
       })
       .catch(err => console.error(err))
@@ -151,16 +163,19 @@ function App() {
       .then(user => {
         setCurrentUser(user);
         setLoggedIn(true);
-        setEmail(email);
         history.push('/');
       })
       .catch(err => console.log(err));
   }
 
   function onSignOut() {
-    setLoggedIn(false);
-    setEmail('');
-    history.push('/sign-in');
+    signOut()
+      .then(() => {
+        setLoggedIn(false);
+        setCurrentUser({});
+        history.push('/sign-in');
+      })
+      .catch(err => console.log(err));
   }
 
   React.useEffect(() => {
@@ -175,7 +190,7 @@ function App() {
   }, []);
   return (
     <CurrentUserContext.Provider value={currentUser}>
-      <Header email={email} onSignOut={onSignOut} />
+      <Header email={currentUser.email} onSignOut={onSignOut} />
 
       <Switch>
         <ProtectedRoute

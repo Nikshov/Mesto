@@ -2,7 +2,6 @@ const _baseUrl = 'http://localhost:3001'; /* ! */
 const _headers = { 'Content-Type': 'application/json' };
 
 function _checkResponse(res) {
-  console.log(res.ok, res);
   if (res.ok) {
     return res.json();
   }
@@ -108,7 +107,14 @@ export function editAvatar(link) {
 
 export function check() {
   return fetch(`${_baseUrl}/users`, {
-    method: 'HEAD',
+    method: 'POST',
+    credentials: 'include',
+  }).then(res => _checkResponse(res));
+}
+
+export function signOut() {
+  return fetch(`${_baseUrl}/signOut`, {
+    method: 'POST',
     credentials: 'include',
   }).then(res => _checkResponse(res));
 }

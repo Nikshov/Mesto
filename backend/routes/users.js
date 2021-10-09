@@ -7,9 +7,11 @@ const {
   updateUser,
   updateAvatar,
   getActualUser,
+  approveCheck,
 } = require('../controllers/users');
 
 router.get('/', getUsers);
+router.post('/', approveCheck);
 router.get('/me', getActualUser);
 router.get('/:userId', celebrate({
   params: Joi.object().keys({
