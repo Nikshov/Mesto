@@ -6,7 +6,7 @@ module.exports = (err, req, res, next) => {
     code = 400;
     text = (err.name === 'ValidationError') ? 'Некорректные данные' : 'Невалидный id';
   }
-  if (err.name === 'MongoError' && err.code === 11000) {
+  if (err.name === 'MongoServerError' && err.code === 11000) {
     code = 409;
     text = 'Пользователь с такой почтой уже существует';
   }

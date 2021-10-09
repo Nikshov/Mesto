@@ -1,6 +1,6 @@
-import React from "react";
-import CurrentUserContext from "../contexts/CurrentUserContext";
-import Card from "./Card";
+import React from 'react';
+import CurrentUserContext from '../contexts/CurrentUserContext';
+import Card from './Card';
 
 function Main({
   onEditProfile,
@@ -15,31 +15,30 @@ function Main({
 
   return (
     <main>
-      <section className="profile">
+      <section className='profile'>
         <div
           onClick={onEditAvatar}
-          className="profile__avatar-container"
-          style={{ backgroundImage: `url(${currentUser.avatar})` }}
-        ></div>
-        <div className="profile__info">
-          <h1 className="profile__info-name">{currentUser.name}</h1>
-          <p className="profile__info-about">{currentUser.about}</p>
+          className='profile__avatar-container'
+          style={{ backgroundImage: `url(${currentUser.avatar})` }}></div>
+        <div className='profile__info'>
+          <h1 className='profile__info-name'>{currentUser.name}</h1>
+          <p className='profile__info-about'>{currentUser.about}</p>
           <button
-            type="button"
-            className="profile__edit-button"
-            aria-label="редактировать информацию в профиле"
+            type='button'
+            className='profile__edit-button'
+            aria-label='редактировать информацию в профиле'
             onClick={onEditProfile}
           />
         </div>
         <button
-          type="button"
-          className="profile__add-button"
-          aria-label="добавить новое место"
+          type='button'
+          className='profile__add-button'
+          aria-label='добавить новое место'
           onClick={onAddPlace}
         />
       </section>
-      <section className="elements">
-        {cards.map((card) => (
+      <section className='elements'>
+        {cards.map(card => (
           <Card
             onCardClick={onCardClick}
             onCardLike={onCardLike}

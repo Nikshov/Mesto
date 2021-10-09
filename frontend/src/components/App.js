@@ -1,39 +1,44 @@
-import React from "react";
-import { Route, Switch, Redirect, useHistory } from "react-router-dom";
-import Header from "./Header";
-import Main from "./Main";
-import Footer from "./Footer";
-import ImagePopup from "./ImagePopup";
-import CurrentUserContext from "../contexts/CurrentUserContext";
-import api from "../utils/api";
-import EditProfilePopup from "./EditProfilePopup";
-import EditAvatarPopup from "./EditAvatarPopup";
-import AddPlacePopup from "./AddPlacePopup";
-import ConfirmDeletePopup from "./ConfirmDeletePopup";
-import Login from "./Login";
-import Register from "./Register";
-import * as authApi from "../utils/authApi";
-import ProtectedRoute from "./ProtectedRoute";
-import InfoTooltip from "./InfoTooltip";
-
-//Пока отправляю минимальное для сдачи задание, так как не успеваю. Мобиьные стили и пр.(например кастомную валидацию) планирую добавить позже
+import React from 'react';
+import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
+import Header from './Header';
+import Main from './Main';
+import Footer from './Footer';
+import ImagePopup from './ImagePopup';
+import CurrentUserContext from '../contexts/CurrentUserContext';
+import EditProfilePopup from './EditProfilePopup';
+import EditAvatarPopup from './EditAvatarPopup';
+import AddPlacePopup from './AddPlacePopup';
+import ConfirmDeletePopup from './ConfirmDeletePopup';
+import Login from './Login';
+import Register from './Register';
+import { ProtectedRoute } from './ProtectedRoute';
+import InfoTooltip from './InfoTooltip';
+import {
+  signIn,
+  signUp,
+  getInitialCards,
+  addNewCard,
+  removeCard,
+  addLike,
+  removeLike,
+  getCurrentUserInfo,
+  editUserInfo,
+  editAvatar,
+} from '../utils/api';
 
 function App() {
+  const [loggedIn, setLoggedIn] = React.useState(false);
   const [currentUser, setCurrentUser] = React.useState({});
   const [cards, setCards] = React.useState([]);
-  const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] =
-    React.useState(false);
+  const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
-  const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] =
-    React.useState(false);
+  const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState(false);
   const [selectedCard, setSelectedCard] = React.useState({ isOpen: false });
   const [request, setRequest] = React.useState(true);
   const [deleteCard, setDeleteCard] = React.useState({ isOpen: false });
-  const [loggedIn, setLoggedIn] = React.useState(false);
   const [isSignUpSuccess, setIsSignUpSuccess] = React.useState(false);
   const [isInfoTooltipOpen, setIsInfoTooltipOpen] = React.useState(false);
-  const [email, setEmail] = React.useState("");
-
+  const [email, setEmail] = React.useState('');
   const history = useHistory();
 
   function handleEditAvatarClick() {
@@ -59,43 +64,40 @@ function App() {
     setSelectedCard({ isOpen: true, ...card });
   }
 
-  async function handleUpdateUser(data) {
+  async function handleUpdateUser({ name, about }) {
     setRequest(false);
-    api
-      .editUserInfo(data)
-      .then((data) => {
+    editUserInfo({ name, about })
+      .then(data => {
         setCurrentUser(data);
         closeAllPopups();
       })
-      .catch((err) => console.error(err))
+      .catch(err => console.error(err))
       .finally(() => {
         setRequest(true);
       });
   }
 
-  function handleUpdateAvatar(data) {
+  function handleUpdateAvatar(link) {
     setRequest(false);
-    api
-      .editAvatar(data)
-      .then((data) => {
+    editAvatar(link)
+      .then(data => {
         setCurrentUser(data);
         closeAllPopups();
       })
-      .catch((err) => console.error(err))
+      .catch(err => console.error(err))
       .finally(() => {
         setRequest(true);
       });
   }
 
-  function handleAddPlaceSubmit(data) {
+  function handleAddPlaceSubmit({ name, link }) {
     setRequest(false);
-    api
-      .addNewCard(data)
-      .then((newCard) => {
+    addNewCard({ name, link })
+      .then(newCard => {
         setCards([newCard, ...cards]);
         closeAllPopups();
       })
-      .catch((err) => {
+      .catch(err => {
         console.error(err);
       })
       .finally(() => {
@@ -104,13 +106,11 @@ function App() {
   }
 
   function handleCardLike(card, isLiked) {
-    (isLiked ? api.deleteLike(card._id) : api.addLike(card._id))
-      .then((newCard) => {
-        setCards((state) =>
-          state.map((c) => (c._id === card._id ? newCard : c))
-        );
+    (isLiked ? removeLike(card._id) : addLike(card._id))
+      .then(newCard => {
+        setCards(state => state.map(c => (c._id === card._id ? newCard : c)));
       })
-      .catch((err) => {
+      .catch(err => {
         console.error(err);
       });
   }
@@ -121,27 +121,25 @@ function App() {
 
   function handleConfirmDelete(card) {
     setRequest(false);
-    api
-      .deleteCard(card._id)
+    removeCard(card._id)
       .then(() => {
-        setCards(cards.filter((item) => item._id !== card._id));
+        setCards(cards.filter(item => item._id !== card._id));
         closeAllPopups();
       })
-      .catch((err) => console.log(err))
+      .catch(err => console.log(err))
       .finally(() => {
         setRequest(true);
       });
   }
 
   function onRegister({ password, email }) {
-    authApi
-      .signUp({ password, email })
-      .then((res) => {
+    signUp({ password, email })
+      .then(() => {
         setIsSignUpSuccess(true);
         setIsInfoTooltipOpen(true);
-        history.push("/sign-in");
+        history.push('/sign-in');
       })
-      .catch((err) => {
+      .catch(err => {
         setIsSignUpSuccess(false);
         setIsInfoTooltipOpen(true);
         console.log(err);
@@ -149,43 +147,29 @@ function App() {
   }
 
   function onLogIn({ password, email }) {
-    authApi
-      .signIn({ password, email })
-      .then((res) => {
-        localStorage.setItem("JWT", res.token);
+    signIn({ password, email })
+      .then(user => {
+        setCurrentUser(user);
         setLoggedIn(true);
         setEmail(email);
-        history.push("/");
+        history.push('/');
       })
-      .catch((err) => console.log(err));
+      .catch(err => console.log(err));
   }
+
   function onSignOut() {
     setLoggedIn(false);
-    setEmail("");
-    localStorage.removeItem("JWT");
-    history.push("/sign-in");
+    setEmail('');
+    history.push('/sign-in');
   }
 
   React.useEffect(() => {
-    if (localStorage.getItem("JWT")) {
-      authApi
-        .checkJWT(localStorage.getItem("JWT"))
-        .then((res) => {
-          setEmail(res.data.email);
-          setLoggedIn(true);
-          history.push("/");
-        })
-        .catch((err) => console.error(err));
-    }
-  }, [history, loggedIn]);
-
-  React.useEffect(() => {
-    Promise.all([api.getUserInfo(), api.getInitialCards()])
-      .then(([userdata, initialCards]) => {
-        setCurrentUser(userdata);
+    Promise.all([getCurrentUserInfo(), getInitialCards()])
+      .then(([userData, initialCards]) => {
+        setCurrentUser(userData);
         setCards(initialCards);
       })
-      .catch((err) => {
+      .catch(err => {
         console.error(err);
       });
   }, []);
@@ -196,7 +180,7 @@ function App() {
       <Switch>
         <ProtectedRoute
           exact
-          path="/"
+          path='/'
           loggedIn={loggedIn}
           component={Main}
           onEditProfile={handleEditProfileClick}
@@ -207,17 +191,15 @@ function App() {
           onCardLike={handleCardLike}
           cards={cards}
         />
-        <Route exact path="/sign-up">
+        <Route exact path='/sign-up'>
           <Register signUp={onRegister} />
         </Route>
 
-        <Route exact path="/sign-in">
+        <Route exact path='/sign-in'>
           <Login signIn={onLogIn} />
         </Route>
 
-        <Route path="/">
-          {loggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
-        </Route>
+        <Route path='/'>{loggedIn ? <Redirect to='/' /> : <Redirect to='/sign-in' />}</Route>
       </Switch>
 
       <EditProfilePopup

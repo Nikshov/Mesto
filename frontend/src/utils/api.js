@@ -1,122 +1,114 @@
-export class Api {
-  constructor(obj) {
-    this._url = obj.url;
-    this._authorization = obj.headers.authorization;
-    this._contentType = obj.headers['Content-Type'];
-  }
+const _baseUrl = 'http://localhost:3001'; /* ! */
+const _headers = { 'Content-Type': 'application/json' };
 
-  _checkResponse(res) {
-    if (res.ok) {
-      return res.json();
-    }
-    return Promise.reject(`Ошибка: ${res.status}`)
+function _checkResponse(res) {
+  console.log(res.ok, res);
+  if (res.ok) {
+    return res.json();
   }
-
-  getInitialCards() {
-    return fetch(`${this._url}/cards`, {
-      headers: {
-        authorization: this._authorization
-      }
-    })
-      .then(this._checkResponse)
-  }
-
-
-  addNewCard(obj) {
-    return fetch(`${this._url}/cards`, {
-      method: 'POST',
-      headers: {
-        authorization: this._authorization,
-        'Content-Type': this._contentType
-      },
-      body: JSON.stringify({
-        name: obj.name,
-        link: obj.link
-      })
-    })
-      .then(this._checkResponse)
-  }
-
-  deleteCard(cardId) {
-    return fetch(`${this._url}/cards/${cardId}`, {
-      method: 'DELETE',
-      headers: {
-        authorization: this._authorization,
-        'Content-Type': this._contentType
-      }
-    })
-      .then(this._checkResponse)
-  }
-
-  addLike(cardId) {
-    return fetch(`${this._url}/cards/likes/${cardId}`, {
-      method: 'PUT',
-      headers: {
-        authorization: this._authorization,
-        'Content-Type': this._contentType
-      }
-    })
-      .then(this._checkResponse)
-  }
-
-  deleteLike(cardId) {
-    return fetch(`${this._url}/cards/likes/${cardId}`, {
-      method: 'DELETE',
-      headers: {
-        authorization: this._authorization,
-        'Content-Type': this._contentType
-      }
-    })
-      .then(this._checkResponse)
-  }
-
-  getUserInfo() {
-    return fetch(`${this._url}/users/me`, {
-      headers: {
-        authorization: this._authorization
-      }
-    })
-      .then(this._checkResponse)
-  }
-
-  editUserInfo(obj) {
-    return fetch(`${this._url}/users/me`, {
-      method: 'PATCH',
-      headers: {
-        authorization: this._authorization,
-        'Content-Type': this._contentType
-      },
-      body: JSON.stringify({
-        name: obj.name,
-        about: obj.about
-      })
-    })
-      .then(this._checkResponse)
-  }
-
-  editAvatar(data) {
-    return fetch(`${this._url}/users/me/avatar`, {
-      method: 'PATCH',
-      headers: {
-        authorization: this._authorization,
-        'Content-Type': this._contentType
-      },
-      body: JSON.stringify({
-        avatar: `${data.avatar}`
-      })
-    })
-      .then(this._checkResponse)
-  }
+  return Promise.reject(`Ошибка: ${res.status}`);
 }
 
+export function signIn({ password, email }) {
+  return fetch(`${_baseUrl}/signin`, {
+    method: 'POST',
+    headers: _headers,
+    body: JSON.stringify({
+      password: password,
+      email: email,
+    }),
+    credentials: 'include',
+  }).then(res => _checkResponse(res));
+}
 
-const api = new Api({
-  url: 'https://mesto.nomoreparties.co/v1/cohort-25',
-  headers: {
-    authorization: '102ba505-245e-4e79-bcbe-97cbfaa7a3eb',
-    'Content-Type': 'application/json'
-  }
-});
+export function signUp({ password, email }) {
+  return fetch(`${_baseUrl}/signup`, {
+    method: 'POST',
+    headers: _headers,
+    body: JSON.stringify({
+      password: password,
+      email: email,
+    }),
+    credentials: 'include',
+  }).then(res => _checkResponse(res));
+}
 
+export function getInitialCards() {
+  return fetch(`${_baseUrl}/cards`, {
+    headers: _headers,
+    credentials: 'include',
+  }).then(res => _checkResponse(res));
+}
 
-export default api;
+export function addNewCard({ name, link }) {
+  return fetch(`${_baseUrl}/cards`, {
+    method: 'POST',
+    headers: _headers,
+    body: JSON.stringify({
+      name: name,
+      link: link,
+    }),
+    credentials: 'include',
+  }).then(res => _checkResponse(res));
+}
+
+export function removeCard(cardId) {
+  return fetch(`${_baseUrl}/cards/${cardId}`, {
+    method: 'DELETE',
+    headers: _headers,
+    credentials: 'include',
+  }).then(res => _checkResponse(res));
+}
+
+export function addLike(cardId) {
+  return fetch(`${_baseUrl}/cards/${cardId}/likes`, {
+    method: 'PUT',
+    headers: _headers,
+    credentials: 'include',
+  }).then(res => _checkResponse(res));
+}
+
+export function removeLike(cardId) {
+  return fetch(`${_baseUrl}/cards/${cardId}/likes`, {
+    method: 'DELETE',
+    headers: _headers,
+    credentials: 'include',
+  }).then(res => _checkResponse(res));
+}
+
+export function getCurrentUserInfo() {
+  return fetch(`${_baseUrl}/users/me`, {
+    headers: _headers,
+    credentials: 'include',
+  }).then(res => _checkResponse(res));
+}
+
+export function editUserInfo({ name, about }) {
+  return fetch(`${_baseUrl}/users/me`, {
+    method: 'PATCH',
+    headers: _headers,
+    body: JSON.stringify({
+      name: name,
+      about: about,
+    }),
+    credentials: 'include',
+  }).then(res => _checkResponse(res));
+}
+
+export function editAvatar(link) {
+  return fetch(`${_baseUrl}/users/me/avatar`, {
+    method: 'PATCH',
+    headers: _headers,
+    body: JSON.stringify({
+      avatar: link,
+    }),
+    credentials: 'include',
+  }).then(res => _checkResponse(res));
+}
+
+export function check() {
+  return fetch(`${_baseUrl}/users`, {
+    method: 'HEAD',
+    credentials: 'include',
+  }).then(res => _checkResponse(res));
+}

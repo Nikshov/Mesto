@@ -1,13 +1,13 @@
-import SignForm from "./SignForm";
+import SignForm from './SignForm';
 
-function Login({signIn}) {
+function Login({ signIn }) {
   return (
     <SignForm
-      titleText="Вход"
-      buttonText="Войти"
-      linkText="Нет аккаунта? Зарегестрироваться"
+      titleText='Вход'
+      buttonText='Войти'
+      linkText='Нет аккаунта? Зарегистрироваться'
       apiRequest={signIn}
-      path="/sign-up"
+      path='/sign-up'
     />
   );
 }

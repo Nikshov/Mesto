@@ -1,14 +1,13 @@
-import SignForm from "./SignForm";
+import SignForm from './SignForm';
 
-function Register({signUp}) {
-
+function Register({ signUp }) {
   return (
     <SignForm
-      titleText="Регистрация"
-      buttonText="Зарегестрироваться"
-      linkText="Уже зарегистрированы? Войти"
+      titleText='Регистрация'
+      buttonText='Зарегистрироваться'
+      linkText='Уже зарегистрированы? Войти'
       apiRequest={signUp}
-      path="/sign-in"
+      path='/sign-in'
     />
   );
 }

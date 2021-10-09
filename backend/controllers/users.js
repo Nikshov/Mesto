@@ -29,17 +29,21 @@ const createUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
-  User.findOne({ email })
-    .then((eMail) => {
-      if (eMail) throw new DuplicateError('Пользователь с такой почтой уже существует');
+  return User.findOne({ email })
+    .then((user) => {
+      if (user) {
+        next(new DuplicateError('Пользователь с такой почтой уже существует'));
+      }
+      return bcrypt.hash(password, 10);
     })
-    .catch(next);
-  bcrypt.hash(password, 10)
     .then((hash) => User.create({
-      name, about, avatar, email, password: hash,
-    })
-      .then((user) => res.status(200).send(user))
-      .catch(next))
+      name,
+      about,
+      avatar,
+      email,
+      password: hash,
+    }))
+    .then(() => res.status(200).send({ message: 'пользователь успешно зарегестрирован' }))
     .catch(next);
 };
 
@@ -76,8 +80,8 @@ const login = (req, res, next) => {
           const token = jwt.sign({ _id: user._id }, 'secret', { expiresIn: '7d' });
           res
             .status(200)
-            .cookie('token', token, { maxAge: 604800000, httpOnly: true })
-            .send({ message: 'Пользователь успешно залогинен' });
+            .cookie('token', token, { maxAge: 604800000, httpOnly: true, sameSite: true })
+            .send(user);
         })
         .catch(next);
     })
