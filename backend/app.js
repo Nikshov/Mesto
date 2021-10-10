@@ -23,7 +23,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(requestLogger);
 
-app.options('*', cors({ origin: true, credentials: true }));
+app.use(cors({
+  origin: 'http://nik.front.nomoredomains.club',
+  credentials: true,
+}));
+
 app.get('/crash-test', () => {
   setTimeout(() => {
     throw new Error('Сервер сейчас упадёт');
