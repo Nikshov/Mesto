@@ -3,7 +3,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const { errors, celebrate, Joi } = require('celebrate');
-const cors = require('cors');
 const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
 const { createUser, login, logOut } = require('./controllers/users');
@@ -14,7 +13,6 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 const urlValidator = require('./constants/urlValidator4Joi');
 
 const allowedCors = [
-  'localhost:3000',
   'http://localhost:3000',
   'https://localhost:3000',
   'http://nik.front.nomoredomains.club',
@@ -31,11 +29,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(requestLogger);
 
-// app.use(cors({
-//   origin: 'http://nik.front.nomoredomains.club',
-//   credentials: true,
-// }));
-
 app.use((req, res, next) => {
   const DEFAULT_ALLOWED_METHODS = 'GET,HEAD,PUT,PATCH,POST,DELETE';
   const { origin } = req.headers;
@@ -45,11 +38,10 @@ app.use((req, res, next) => {
   if (allowedCors.includes(origin)) {
     res.header('Access-Control-Allow-Origin', origin);
   }
-
   if (method === 'OPTIONS') {
     res.header('Access-Control-Allow-Methods', DEFAULT_ALLOWED_METHODS);
     res.header('Access-Control-Allow-Headers', requestHeaders);
-    return res.status(200).send();
+    return res.end;
   }
 
   return next();
