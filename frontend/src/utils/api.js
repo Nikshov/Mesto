@@ -1,4 +1,4 @@
-const _baseUrl = 'http://localhost:3001'; /* ! */
+const _baseUrl = 'http://api.nik.front.nomoredomains.club/sign-up'; /* ! */
 const _headers = { 'Content-Type': 'application/json' };
 
 function _checkResponse(res) {
