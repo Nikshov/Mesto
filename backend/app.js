@@ -13,6 +13,14 @@ const NotFoundError = require('./constants/notFoundError');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const urlValidator = require('./constants/urlValidator4Joi');
 
+const allowedCors = [
+  'localhost:3000',
+  'http://localhost:3000',
+  'https://localhost:3000',
+  'http://nik.front.nomoredomains.club',
+  'https://nik.front.nomoredomains.club',
+];
+
 const { PORT = 3000 } = process.env;
 const app = express();
 
@@ -23,10 +31,29 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(requestLogger);
 
-app.use(cors({
-  origin: 'http://nik.front.nomoredomains.club',
-  credentials: true,
-}));
+// app.use(cors({
+//   origin: 'http://nik.front.nomoredomains.club',
+//   credentials: true,
+// }));
+
+app.use((req, res, next) => {
+  const DEFAULT_ALLOWED_METHODS = 'GET,HEAD,PUT,PATCH,POST,DELETE';
+  const { origin } = req.headers;
+  const { method } = req;
+  const requestHeaders = req.headers['access-control-request-headers'];
+
+  if (allowedCors.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+  }
+
+  if (method === 'OPTIONS') {
+    res.header('Access-Control-Allow-Methods', DEFAULT_ALLOWED_METHODS);
+    res.header('Access-Control-Allow-Headers', requestHeaders);
+    return res.status(200).send();
+  }
+
+  return next();
+});
 
 app.get('/crash-test', () => {
   setTimeout(() => {
