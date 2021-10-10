@@ -1,6 +1,6 @@
 {
-  "name": "react-mesto-auth",
-  "homepage": "https://nikshov.github.io/react-mesto-auth/",
+  "name": "frontend",
+  "homepage": "http://nik.front.nomoredomains.club/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
