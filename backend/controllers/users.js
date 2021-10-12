@@ -82,7 +82,9 @@ const login = (req, res, next) => {
           const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'secret',
             { expiresIn: '7d' });
           const copyOfUser = user;
-          delete copyOfUser.password;
+          // eslint-disable-next-line dot-notation
+          delete copyOfUser['password'];
+          console.log(copyOfUser);
           res
             .status(200)
             .cookie('token', token, { maxAge: 604800000, httpOnly: true, sameSite: true })
