@@ -81,10 +81,12 @@ const login = (req, res, next) => {
           if (!m) throw new UnauthorizedError('Неправильные почта или пароль');
           const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'secret',
             { expiresIn: '7d' });
+          const copyOfUser = user;
+          delete copyOfUser.password;
           res
             .status(200)
             .cookie('token', token, { maxAge: 604800000, httpOnly: true, sameSite: true })
-            .send(user);
+            .send(copyOfUser);
         })
         .catch(next);
     })
