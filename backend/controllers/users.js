@@ -81,14 +81,12 @@ const login = (req, res, next) => {
           if (!m) throw new UnauthorizedError('Неправильные почта или пароль');
           const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'secret',
             { expiresIn: '7d' });
-          const copyOfUser = user;
-          // eslint-disable-next-line dot-notation
-          delete copyOfUser['password'];
-          console.log(copyOfUser);
+          const { _doc } = { ...user };
+          delete _doc.password;
           res
             .status(200)
             .cookie('token', token, { maxAge: 604800000, httpOnly: true, sameSite: true })
-            .send(copyOfUser);
+            .send(_doc);
         })
         .catch(next);
     })
@@ -120,3 +118,6 @@ module.exports = {
   logOut,
   approveCheck,
 };
+/* В ревью написано «Некоторые моменты указаны в файлах»,
+но прошерстив файлы не обнаружил никаких комментариев.
+В файлах ревью тоже нет комментов. =\ */
