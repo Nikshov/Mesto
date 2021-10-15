@@ -1,4 +1,4 @@
-const _baseUrl = 'https://api.nik.front.nomoredomains.club'; /* ! */
+const _baseUrl = 'https://api.nik.front.nomoredomains.club';
 const _headers = { 'Content-Type': 'application/json' };
 
 function _checkResponse(res) {
