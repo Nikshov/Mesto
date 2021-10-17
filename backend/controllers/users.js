@@ -85,7 +85,7 @@ const login = (req, res, next) => {
           delete _doc.password;
           res
             .status(200)
-            .cookie('token', token, { maxAge: 604800000, httpOnly: true, sameSite: 'strict' })
+            .cookie('token', token, { maxAge: 604800000, httpOnly: true, sameSite: 'Strict' })
             .send(_doc);
         })
         .catch(next);
@@ -94,7 +94,7 @@ const login = (req, res, next) => {
 };
 
 const logOut = (req, res) => {
-  res.status(200).cookie('token', '', { maxAge: -1, sameSite: 'strict' }).send({});
+  res.status(200).cookie('token', '', { maxAge: -1, httpOnly: true, sameSite: 'Strict' }).send({});
 };
 
 const getActualUser = (req, res, next) => {
