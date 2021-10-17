@@ -94,7 +94,7 @@ const login = (req, res, next) => {
 };
 
 const logOut = (req, res) => {
-  res.status(200).cookie('token', '', { maxAge: -1 }).send({});
+  res.status(200).cookie('token', '', { maxAge: -1, sameSite: 'strict' }).send({});
 };
 
 const getActualUser = (req, res, next) => {
