@@ -80,7 +80,6 @@ function App() {
     editUserInfo({ name, about })
       .then(data => {
         setCurrentUser(data);
-        console.log(currentUser);
         closeAllPopups();
       })
       .catch(err => console.error(err))
