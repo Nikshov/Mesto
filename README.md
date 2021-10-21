@@ -21,6 +21,7 @@
 * Восстановить закрытие попапов по нажатию на ESC или клику вне области попапа.
 * Автоматическое закрытие попапа Success/Failure при регистрации.  
   
-Public IP: 62.84.123.124  
-URL сайта: https://nik.front.nomoredomains.club/  
-URL api: https://api.nik.front.nomoredomains.club/  
+##  
+* Public IP: 62.84.123.124  
+* URL сайта: https://nik.front.nomoredomains.club/  
+* URL api: https://api.nik.front.nomoredomains.club/  
